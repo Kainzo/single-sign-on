@@ -1,0 +1,535 @@
+<?xml version="1.0" encoding="utf-8"?>
+<addon addon_id="AdvancedUpgrades" title="Advanced User Upgrades" version_string="1.0" version_id="1" url="" install_callback_class="AdvancedUpgrades_Install" install_callback_method="install" uninstall_callback_class="" uninstall_callback_method="">
+  <admin_navigation>
+    <navigation navigation_id="userUpgradeLog" parent_navigation_id="userUpgrades" display_order="20" link="advanced-upgrades/log" admin_permission_id="viewLogs" debug_only="0" hide_no_children="0"/>
+  </admin_navigation>
+  <admin_permissions/>
+  <admin_style_properties/>
+  <admin_templates>
+    <template title="advancedupgrades_active_record_view"><![CDATA[<xen:title>{xen:phrase transaction_log}</xen:title> 
+
+<div class="section">
+	<div class="overlayScroll">
+		<table width="100%">
+		<tr>
+			<th class="subHeading" colspan="2">Transaction</th>
+		</tr>
+		<tr>
+			<th class="primaryContent" width="25%">
+				{xen:phrase au_id}:
+			</th>
+			<td class="primaryContent">
+				{$record.user_upgrade_record_id}
+			</td>
+		</tr>
+		<tr>
+			<th class="primaryContent">
+				{xen:phrase user_id}:
+			</th>
+			<td class="primaryContent">
+				{$record.user_id}
+			</td>
+		</tr>
+		<tr>
+			<th class="primaryContent">
+				{xen:phrase upgrade_id}:
+			</th>
+			<td class="primaryContent">
+				{$record.user_upgrade_id}
+			</td>
+		</tr>
+		<tr>
+			<th class="primaryContent">
+				{xen:phrase start_date}:
+			</th>
+			<td class="primaryContent">
+				{xen:date $record.start_date}
+			</td>
+		</tr>
+		<tr>
+			<th class="primaryContent">
+				{xen:phrase end_date}:
+			</th>
+			<td class="primaryContent">
+				<xen:if is="{$record.end_date}==0">
+					{xen:phrase permanent}
+				<xen:else/>
+					{xen:date $record.end_date}
+				</xen:if>
+			</td>
+		</tr>
+		<tr>
+			<th class="primaryContent">
+				{xen:phrase amount}:
+			</th>
+			<td class="primaryContent">
+				{$record.amount}
+			</td>
+		</tr>
+		</table>
+		<table width="100%">
+			<tr>
+				<th class="subHeading" colspan="2">{xen:phrase extra}</th>
+			</tr>
+			<xen:foreach loop="$record.extra" key="$key" value="$value">
+				<tr>
+					<th class="primaryContent" width="25%">
+						{$key}:
+					</th>
+					<td class="primaryContent">
+						{$value}
+					</td>
+				</tr>
+			</xen:foreach>
+		</table>
+	</div>
+	<div class="sectionFooter overlayOnly">
+		<a class="button primary OverlayCloser">{xen:phrase close}</a>
+	</div>
+</div>]]></template>
+    <template title="advancedupgrades_transaction_log"><![CDATA[<xen:title>{xen:phrase transaction_log}</xen:title>
+
+<xen:require css="advancedupgrades_transaction_log.css" />
+
+<xen:if is="{$transactions}">
+
+	<div class="section">
+	
+		<table class="dataTable">
+			<tr>
+				<th class="subHeading">{xen:phrase transaction_id}</th>
+				<th class="subHeading">{xen:phrase processor}</th>
+				<th class="subHeading">{xen:phrase message}</th>
+				<th class="subHeading">{xen:phrase date}</th>
+				<th class="subHeading">&nbsp;</th>
+			</tr>
+			<xen:foreach loop="$transactions" value="$transaction">
+				<tr class="dataRow">
+					<td>{$transaction.transaction_id}</td>
+					<td>{$transaction.processor}</td>
+					<td>{$transaction.message}</td>
+					<td>
+						<abbr class="muted">{xen:date $transaction.log_date} {xen:time $transaction.log_date}</abbr>
+					</td>
+					<td class="dataOptions">
+						<a class="OverlayTrigger secondaryContent" href="admin.php?advanced-upgrades/view&id={$transaction.user_upgrade_log_id}">{xen:phrase details}</a>
+					</td>
+				</tr>
+			</xen:foreach>
+		</table>
+	
+		<p class="sectionFooter">{xen:phrase showing_x_of_y_items, 'count=<span class="FilterListCount">{xen:count $entries}</span>', 'total={xen:number $total}'}</p>
+	
+	</div>
+		
+	<xen:adminpagenav page="{$page}" perpage="{$perPage}" total="{$total}" link="advanced-upgrades/log" />
+
+	<script>
+		$(document).ready(function() {
+			$(".PageNav a").each(function()
+			 {
+				 if ($(this).attr("href")!=undefined)
+				 {
+					 $(this).attr("href", $(this).attr("href").replace(/amp\;/gi,''));
+				 }
+			 });				
+		});
+	</script>
+	
+<xen:else />
+	<div class="noResults">{xen:phrase no_transactions_logged}</div>
+</xen:if>]]></template>
+    <template title="advancedupgrades_transaction_log_view"><![CDATA[<xen:title>{xen:phrase transaction_log}</xen:title> 
+
+<div class="section">
+	<div class="overlayScroll">
+		<table width="100%">
+		<tr>
+			<th class="subHeading" colspan="2">Transaction</th>
+		</tr>
+		<tr>
+			<th class="primaryContent" width="25%">
+				{xen:phrase au_id}:
+			</th>
+			<td class="primaryContent">
+				{$transaction.user_upgrade_log_id}
+			</td>
+		</tr>
+		<tr>
+			<th class="primaryContent">
+				{xen:phrase record_id}:
+			</th>
+			<td class="primaryContent">
+				{$transaction.user_upgrade_record_id}
+			</td>
+		</tr>
+		<tr>
+			<th class="primaryContent">
+				{xen:phrase processor}:
+			</th>
+			<td class="primaryContent">
+				{$transaction.processor}
+			</td>
+		</tr>
+		<tr>
+			<th class="primaryContent">
+				{xen:phrase transaction_id}:
+			</th>
+			<td class="primaryContent">
+				{$transaction.transaction_id}
+			</td>
+		</tr>
+		<tr>
+			<th class="primaryContent">
+				{xen:phrase type}:
+			</th>
+			<td class="primaryContent">
+				{$transaction.transaction_type}
+			</td>
+		</tr>
+		<tr>
+			<th class="primaryContent">
+				{xen:phrase message}:
+			</th>
+			<td class="primaryContent">
+				{$transaction.message}
+			</td>
+		</tr>
+		<tr>
+			<th class="primaryContent">
+				{xen:phrase date}:
+			</th>
+			<td class="primaryContent">
+				{xen:date $transaction.log_date} {xen:time $transaction.log_date}
+			</td>
+		</tr>
+		</table>
+		<table width="100%">
+			<tr>
+				<th class="subHeading" colspan="2">{xen:phrase transaction_details}</th>
+			</tr>
+			<xen:foreach loop="$transaction.transaction_details" key="$key" value="$value">
+				<tr>
+					<th class="primaryContent" width="25%">
+						{$key}:
+					</th>
+					<td class="primaryContent">
+						{$value}
+					</td>
+				</tr>
+			</xen:foreach>
+		</table>
+	</div>
+	<div class="sectionFooter overlayOnly">
+		<a class="button primary OverlayCloser">{xen:phrase close}</a>
+	</div>
+</div>]]></template>
+    <template title="user_upgrade_active_advanced"><![CDATA[<xen:title>{xen:phrase active_user_upgrades}</xen:title>
+
+<xen:if is="{$upgradeRecords}">
+	<table class="dataTable">
+	<tr class="dataRow">
+		<th>{xen:phrase user}</th>
+		<th>{xen:phrase user_upgrade_title}</th>
+		<th>{xen:phrase amount}</th>
+		<th>{xen:phrase end_date}</th>
+		<th>&nbsp;</th>
+	</tr>
+	<xen:foreach loop="$upgradeRecords" value="$upgradeRecord">
+		<tr class="dataRow">
+			<td>{$upgradeRecord.username}</td>
+			<td>{$upgradeRecord.title}</td>
+			<td>{$upgradeRecord.amount}</td>
+			<td><xen:if is="{$upgradeRecord.end_date}">{xen:date $upgradeRecord.end_date}<xen:else />{xen:phrase permanent}</xen:if></td>
+			<td class="dataOptions">
+				<a href="{xen:adminlink user-upgrades/downgrade, '', 'user_upgrade_record_id={$upgradeRecord.user_upgrade_record_id}'}" class="secondaryContent">{xen:phrase downgrade}</a><a class="OverlayTrigger secondaryContent" href="admin.php?advanced-upgrades/viewActive&id={$upgradeRecord.user_upgrade_record_id}">{xen:phrase details}</a>
+			</td>
+		</tr>
+	</xen:foreach>
+	<tr>
+		<td colspan="5" class="sectionFooter">{xen:phrase showing_x_of_y_items, 'count={xen:count $upgradeRecords}', 'total={xen:number $totalRecords}'}</td>
+	</tr>
+	</table>
+
+	{xen:adminpagenav $perPage, $totalRecords, $page, user-upgrades/active, ''}
+<xen:else />
+	{xen:phrase there_no_upgrades_active_at_this_time}
+</xen:if>]]></template>
+    <template title="user_upgrade_edit_advanced"><![CDATA[<xen:title>{xen:if '{$upgrade.title}', '{xen:phrase edit_user_upgrade}: {$upgrade.title}', '{xen:phrase create_new_user_upgrade}'}</xen:title>
+
+<xen:if is="{$upgrade.title}">
+	<xen:navigation>
+		<xen:breadcrumb href="{xen:adminlink user-upgrades}#{xen:helper listitemid, $upgrade.user_upgrade_id}">{$upgrade.title}</xen:breadcrumb>
+	</xen:navigation>
+</xen:if>
+
+<xen:form action="{xen:adminlink user-upgrades/save, $upgrade}">
+	<xen:textboxunit label="{xen:phrase title}:" name="title" value="{$upgrade.title}" data-liveTitleTemplate="{xen:if {$upgrade.title},
+		'{xen:phrase edit_user_upgrade}: <em>%s</em>',
+		'{xen:phrase create_new_user_upgrade}: <em>%s</em>'}" />
+	<xen:textboxunit label="{xen:phrase description}:" name="description" value="{$upgrade.description}" rows="2" inputclass="Elastic" />
+	<xen:textboxunit label="{xen:phrase agreement}:" name="agreement" value="{$upgrade.agreement}" rows="4" inputclass="Elastic" />
+	<xen:textboxunit label="{xen:phrase redirect}:" name="redirect" value="{$upgrade.redirect}" />
+	<xen:spinboxunit label="{xen:phrase display_order}:" name="display_order" value="{$upgrade.display_order}" min="1" />
+		
+	<xen:controlunit label="{xen:phrase cost}:">
+		<xen:textbox name="cost_amount" value="{$upgrade.cost_amount}" size="3" />
+		<xen:select name="cost_currency" value="{$upgrade.cost_currency}" inputclass="autoSize">
+			<xen:option value="usd">USD</xen:option>
+			<xen:option value="cad">CAD</xen:option>
+			<xen:option value="aud">AUD</xen:option>
+			<xen:option value="gbp">GBP</xen:option>
+			<xen:option value="eur">EUR</xen:option>
+		</xen:select>
+	</xen:controlunit>
+	
+	<xen:radiounit label="{xen:phrase length}:" name="length_type" value="{xen:if $upgrade.length_unit, 'timed', 'permanent'}">
+		<xen:option value="permanent">{xen:phrase permanent}</xen:option>
+		<xen:option value="timed" label="{xen:phrase for_length}:">
+			<xen:disabled>
+				<xen:textbox name="length_amount" value="{xen:if $upgrade.length_unit, $upgrade.length_amount, ''}" size="3" />
+				<xen:select name="length_unit" value="{$upgrade.length_unit}"  inputclass="autoSize">
+					<xen:option value="day">{xen:phrase days}</xen:option>
+					<xen:option value="month">{xen:phrase months}</xen:option>
+					<xen:option value="year">{xen:phrase years}</xen:option>
+				</xen:select>
+			</xen:disabled>
+			<xen:disabled>
+				<label for="ctrl_recurring"><input type="checkbox" name="recurring" value="1" id="ctrl_recurring" {xen:checked $upgrade.recurring} /> {xen:phrase recurring_payments}</label>
+				<p class="hint">{xen:phrase payment_automatically_aken_every_time_period_to_keep_active}</p>
+			</xen:disabled>
+		</xen:option>
+	</xen:radiounit>
+	
+	<xen:checkboxunit label="{xen:phrase additional_user_groups}:" name="extra_group_ids" explain="{xen:phrase puts_user_in_selected_groups_while_upgrade_is_active}" class="checkboxColumns">
+		<xen:options source="$userGroupOptions" />
+	</xen:checkboxunit>
+	
+	<xen:if is="{$disabledUpgradeOptions}">
+		<xen:checkboxunit label="{xen:phrase disabled_user_upgrades}:" name="disabled_upgrade_ids" explain="{xen:phrase disables_selected_user_upgrades_while_this_upgrade_is_active}">
+			<xen:options source="$disabledUpgradeOptions" />
+		</xen:checkboxunit>
+	</xen:if>
+	
+	<xen:checkboxunit label="">
+		<xen:option label="{xen:phrase purchaseable_multiple_times}" name="purchase_multiple" selected="{$upgrade.purchase_multiple}" />
+	</xen:checkboxunit>
+	
+	<xen:checkboxunit label="">
+		<xen:option label="{xen:phrase can_be_purchased}" name="can_purchase" selected="{$upgrade.can_purchase}" />
+	</xen:checkboxunit>
+	
+	<xen:submitunit save="{xen:phrase save_user_upgrade}">
+		<xen:if is="{$upgrade.user_upgrade_id}">
+			<input type="button" value="{xen:phrase delete_user_upgrade}..." accesskey="d" class="button OverlayTrigger"
+				data-href="{xen:adminlink user-upgrades/delete, $upgrade}" />
+		</xen:if>
+	</xen:submitunit>
+</xen:form>]]></template>
+  </admin_templates>
+  <code_events/>
+  <code_event_listeners>
+    <listener event_id="load_class_controller" execute_order="10" callback_class="AdvancedUpgrades_Listen" callback_method="load_class_controller" active="1" description=""/>
+    <listener event_id="load_class_datawriter" execute_order="10" callback_class="AdvancedUpgrades_Listen" callback_method="load_class_datawriter" active="1" description=""/>
+    <listener event_id="load_class_model" execute_order="10" callback_class="AdvancedUpgrades_Listen" callback_method="load_class_model" active="1" description=""/>
+    <listener event_id="template_create" execute_order="10" callback_class="AdvancedUpgrades_Listen" callback_method="template_create" active="1" description=""/>
+  </code_event_listeners>
+  <cron/>
+  <email_templates/>
+  <optiongroups/>
+  <permissions>
+    <permission_groups/>
+    <permissions/>
+    <interface_groups/>
+  </permissions>
+  <phrases>
+    <phrase title="about_to_purchase" version_id="0" version_string="1.0"><![CDATA[You are about to purchase "{upgrade}"]]></phrase>
+    <phrase title="account_upgrade_confirm" version_id="0" version_string="1.0"><![CDATA[Account Upgrade Confirmation]]></phrase>
+    <phrase title="admin_navigation_userUpgradeLog" version_id="0" version_string="1.0"><![CDATA[Transaction Log]]></phrase>
+    <phrase title="agreement" version_id="0" version_string="1.0"><![CDATA[Agreement]]></phrase>
+    <phrase title="amount" version_id="0" version_string="1.0"><![CDATA[Amount]]></phrase>
+    <phrase title="au_id" version_id="0" version_string="1.0"><![CDATA[ID]]></phrase>
+    <phrase title="i_agree_to_agreement" version_id="0" version_string="1.0"><![CDATA[<label>{checkbox} I agree to the</label>  <a {agreement_attributes}>license agreement</a>.]]></phrase>
+    <phrase title="i_agree_to_terms_and_rules_and_agreement" version_id="0" version_string="1.0"><![CDATA[<label>{checkbox} I agree to the</label> <a {terms_attributes}>terms and rules</a> and the  <a {agreement_attributes}>license agreement</a>.]]></phrase>
+    <phrase title="new_account_information" version_id="0" version_string="1.0"><![CDATA[New Account Information]]></phrase>
+    <phrase title="no_transactions_logged" version_id="0" version_string="1.0"><![CDATA[No transactions have been logged yet]]></phrase>
+    <phrase title="processor" version_id="0" version_string="1.0"><![CDATA[Processor]]></phrase>
+    <phrase title="purchaseable_multiple_times" version_id="0" version_string="1.0"><![CDATA[Can be purchased multiple times]]></phrase>
+    <phrase title="record_id" version_id="0" version_string="1.0"><![CDATA[Record ID]]></phrase>
+    <phrase title="sure_you_want_to_purchase_upgrade" version_id="0" version_string="1.0"><![CDATA[Are you sure you want to purchase "{upgrade}"?]]></phrase>
+    <phrase title="transaction_details" version_id="0" version_string="1.0"><![CDATA[Transaction Details]]></phrase>
+    <phrase title="transaction_id" version_id="0" version_string="1.0"><![CDATA[Transaction ID]]></phrase>
+    <phrase title="transaction_log" version_id="0" version_string="1.0"><![CDATA[Transaction Log]]></phrase>
+    <phrase title="upgrade_id" version_id="0" version_string="1.0"><![CDATA[Upgrade ID]]></phrase>
+    <phrase title="user_id" version_id="0" version_string="1.0"><![CDATA[User ID]]></phrase>
+    <phrase title="view_active_upgrade" version_id="0" version_string="1.0"><![CDATA[View Active Upgrade]]></phrase>
+  </phrases>
+  <route_prefixes>
+    <route_type type="admin">
+      <prefix original_prefix="advanced-upgrades" class="AdvancedUpgrades_PrefixAdmin_AdvancedUpgrades" build_link="all"/>
+    </route_type>
+    <route_type type="public">
+      <prefix original_prefix="upgrades" class="AdvancedUpgrades_RoutePrefix_Upgrades" build_link="all"/>
+    </route_type>
+  </route_prefixes>
+  <style_properties/>
+  <templates>
+    <template title="account_upgrades_advanced" version_id="0" version_string="1.0"><![CDATA[<xen:title>{xen:phrase account_upgrades}</xen:title>
+
+<xen:require css="account_upgrades.css" />
+
+<xen:if is="{$available}">
+	<div class="section">
+		<h3 class="subHeading">{xen:phrase available_upgrades}</h3>
+		<ul>
+		<xen:foreach loop="$available" value="$upgrade">
+			<li class="primaryContent">
+				<div class="upgrade">	
+					<div class="upgradeForm">
+						<div class="cost">{$upgrade.costPhrase}</div>
+						<input type="button" value="{xen:phrase purchase}" class="button OverlayTrigger" data-href="{xen:link 'upgrades/purchase'}&upgradeId={$upgrade.user_upgrade_id}" />
+					</div>
+					<div class="upgradeMain">
+						<h4 class="title">{$upgrade.title}</h4>
+						<xen:if is="{$upgrade.description}">
+							<div class="description">{xen:raw $upgrade.description}</div>
+						</xen:if>
+					</div>
+				</div>
+			</li>
+		</xen:foreach>
+		</ul>
+	</div>
+</xen:if>
+
+<xen:if is="{$purchased}">
+	<div class="section">
+		<h3 class="subHeading">{xen:phrase purchased_upgrades}</h3>
+		<ul>
+		<xen:foreach loop="$purchased" value="$upgrade">
+			<li class="primaryContent">
+				<div class="upgrade">					
+					<div class="upgradeForm">
+						<xen:if is="{$upgrade.record.end_date}">
+							<div>{xen:phrase expires}: <xen:datetime time="$upgrade.record.end_date" /></div>
+						</xen:if>
+						<xen:if is="{$upgrade.length_unit} AND {$upgrade.recurring}">
+							<a href="{$payPalUrl}?cmd=_subscr-find&amp;alias={xen:urlencode $xenOptions.payPalPrimaryAccount}" class="button">{xen:phrase cancel_subscription}</a>
+						</xen:if>
+					</div>
+					
+					<div class="upgradeMain">
+						<h4 class="title">{$upgrade.title}<xen:if is="{$upgrade.record.amount}>1"><span class="amount"> ({xen:phrase amount}: {$upgrade.record.amount})</span></xen:if></h4>
+						<xen:if is="{$upgrade.description}">
+							<div class="description">{xen:raw $upgrade.description}</div>
+						</xen:if>
+					</div>
+				</div>
+			</li>
+		</xen:foreach>
+		</ul>
+	</div>
+</xen:if>]]></template>
+    <template title="account_upgrades_advanced_confirm" version_id="0" version_string="1.0"><![CDATA[<xen:title>{xen:phrase account_upgrade_confirm}</xen:title>
+
+<form action="{xen:link 'upgrades/purchaseRedirect'}&upgradeId={$upgrade.user_upgrade_id}" class="xenForm formOverlay advancedUpgrade">
+	
+	<p>{xen:phrase sure_you_want_to_purchase_upgrade, 'upgrade={$upgrade.title}'}</p>
+	
+	<dl class="ctrlUnit submitUnit">
+			<dt></dt>
+			<dd>
+				<xen:if is="{$upgrade.length_unit} AND {$upgrade.recurring}">
+					<a class="button" href="{xen:link 'upgrades/purchaseRedirect'}&upgradeId={$upgrade.user_upgrade_id}">{xen:phrase subscribe}</a>
+				<xen:else />
+					<a class="button" href="{xen:link 'upgrades/purchaseRedirect'}&upgradeId={$upgrade.user_upgrade_id}">{xen:phrase purchase}</a>
+				</xen:if>
+			</dd>
+		</dl>
+
+</form>]]></template>
+    <template title="account_upgrades_advanced_register" version_id="0" version_string="1.0"><![CDATA[<xen:title>{xen:phrase new_account_information}</xen:title>
+
+<xen:require js="js/advancedupgrades/advancedupgrades.js" />
+
+<form action="{xen:link 'upgrades/purchaseRegister'}" method="post" class="xenForm AutoValidator formOverlay advancedUpgrade"
+	data-fieldValidatorUrl="{xen:link register/validate-field}"
+>
+
+		<div class="errorPanel" style="display: none;">
+			<h3 class="errorHeading">{xen:phrase please_correct_following_errors}:</h3>
+			<div class="baseHtml errors">
+				<ol>
+
+				</ol>
+			</div>
+		</div>
+
+	<dl class="ctrlUnit">
+		<dt><label for="ctrl_username">{xen:phrase name}:</label></dt>
+		<dd>
+			<input type="text" name="username" value="{$fields.username}" class="textCtrl" id="ctrl_username" autofocus="true" autocomplete="off" />
+			<p class="explain">{xen:phrase this_is_name_that_will_be_shown_with_your_messages}</p>
+		</dd>
+	</dl>
+
+	<dl class="ctrlUnit">
+		<dt><label for="ctrl_email">{xen:phrase email}:</label></dt>
+		<dd><input type="email" name="email" value="{$fields.email}" dir="ltr" class="textCtrl" id="ctrl_email" /></dd>
+	</dl>
+
+	<dl class="ctrlUnit">
+		<dt><label for="ctrl_password">{xen:phrase password}:</label></dt>
+		<dd><input type="password" name="password" class="textCtrl OptOut" id="ctrl_password" autocomplete="off" /></dd>
+	</dl>
+
+	<xen:if hascontent="true">
+		<fieldset>
+			<xen:contentcheck>
+				<xen:include template="helper_captcha_unit" />
+			</xen:contentcheck>
+		</fieldset>
+	</xen:if>
+	
+	<h2 class="heading h1">{xen:phrase account_upgrade_confirm}</h2>
+
+	<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
+	
+	<input type="hidden" name="upgradeId" value="{$upgrade.user_upgrade_id}"/>
+	
+	<div class="upgradeConfirmation">{xen:phrase about_to_purchase, 'upgrade={$upgrade.title}'}</div>
+
+	<dl class="ctrlUnit submitUnit">
+		<dt></dt>
+		<dd>
+			<xen:if is="{$tosUrl}">
+				<ul>
+					<li>
+						{xen:phrase i_agree_to_terms_and_rules, 'checkbox=<input type="checkbox" name="agree" value="1" id="ctrl_agree" class="Disabler" />', 'terms_attributes=href="{$tosUrl}" target="_blank"'}
+						<ul id="ctrl_agree_Disabler">
+							<li>
+								<xen:if is="{$upgrade.length_unit} AND {$upgrade.recurring}">
+									<input type="submit" value="{xen:phrase subscribe}" class="button" />
+								<xen:else />
+									<input type="submit" value="{xen:phrase purchase}" class="button" />
+								</xen:if>
+							</li>
+						</ul>						
+					</li>
+				</ul>
+			<xen:else />
+				<xen:if is="{$upgrade.length_unit} AND {$upgrade.recurring}">
+					<input type="submit" value="{xen:phrase subscribe}" class="button" />
+				<xen:else />
+					<input type="submit" value="{xen:phrase purchase}" class="button" />
+				</xen:if>
+			</xen:if>
+		</dd>
+	</dl>
+
+</form>]]></template>
+    <template title="account_upgrade_agreement" version_id="0" version_string="1.0"><![CDATA[{xen:raw $upgrade.agreement}]]></template>
+  </templates>
+  <bb_code_media_sites/>
+  <template_modifications/>
+</addon>
