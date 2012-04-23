@@ -345,6 +345,12 @@ custom=Custom (define below)</edit_format_params>
       <sub_options></sub_options>
       <relation group_id="advancedUserUpgrades" display_order="10"/>
     </option>
+    <option option_id="auuTerminologyPlural" edit_format="textbox" data_type="string" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="advancedUserUpgrades" display_order="30"/>
+    </option>
     <option option_id="auuTerminologySingular" edit_format="textbox" data_type="string" can_backup="1">
       <default_value></default_value>
       <edit_format_params></edit_format_params>
@@ -369,6 +375,8 @@ custom=Custom (define below)</edit_format_params>
     <phrase title="new_account_information" version_id="0" version_string="1.0"><![CDATA[New Account Information]]></phrase>
     <phrase title="no_transactions_logged" version_id="0" version_string="1.0"><![CDATA[No transactions have been logged yet]]></phrase>
     <phrase title="option_auuTerminology" version_id="3" version_string="1.0 Beta 2 - Fix 1"><![CDATA[Terminology]]></phrase>
+    <phrase title="option_auuTerminologyPlural" version_id="4" version_string="1.0"><![CDATA[Custom Terminology (Plural)]]></phrase>
+    <phrase title="option_auuTerminologyPlural_explain" version_id="4" version_string="1.0"><![CDATA[eg. Products]]></phrase>
     <phrase title="option_auuTerminologySingular" version_id="3" version_string="1.0 Beta 2 - Fix 1"><![CDATA[Custom Terminology (Singular)]]></phrase>
     <phrase title="option_auuTerminologySingular_explain" version_id="3" version_string="1.0 Beta 2 - Fix 1"><![CDATA[eg. Product]]></phrase>
     <phrase title="option_auuTerminology_explain" version_id="3" version_string="1.0 Beta 2 - Fix 1"><![CDATA[Terminology to use for user upgrades]]></phrase>
