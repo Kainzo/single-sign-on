@@ -1,6 +1,9 @@
 <?php
 
-class AdvancedUpgrades_ControllerPublic_Extend_UserUpgrade extends XFCP_AdvancedUpgrades_ControllerPublic_Extend_UserUpgrade
+/**
+ * Extend user upgrade controller to handle new fields
+ */
+class AdvancedUpgrades_ControllerAdmin_Extend_UserUpgrade extends XFCP_AdvancedUpgrades_ControllerAdmin_Extend_UserUpgrade
 {
 
 	/**

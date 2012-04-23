@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Extend UserUpgrade datawriter to support additional fields
+ */
 class AdvancedUpgrades_DataWriter_Extend_UserUpgrade extends XFCP_AdvancedUpgrades_DataWriter_Extend_UserUpgrade
 {
 	

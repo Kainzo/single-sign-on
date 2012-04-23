@@ -1,8 +1,19 @@
 <?php
 
+/**
+ * Installation actions
+ */
 class AdvancedUpgrades_Install
 {
 	
+	/**
+	 * Install / upgrade actions
+	 * 
+	 * @param	bool			$existingAddOn
+	 * @param	array			$addOnData
+	 * 
+	 * @return	void
+	 */
 	public static function install($existingAddOn, $addOnData)
 	{
 		
@@ -13,6 +24,13 @@ class AdvancedUpgrades_Install
 		
 	}
 	
+	/**
+	 * Create database structure
+	 *
+	 * Wrapped in try/catch because there is no uninstall method (to prevent data loss)
+	 * 
+	 * @return	void							
+	 */
 	protected static function createStructure()
 	{
 		try

@@ -1,10 +1,21 @@
 <?php
 
+/**
+ * Admin controller for advanced upgrades, used to show log and entry details
+ */
 class AdvancedUpgrades_ControllerAdmin_AdvancedUpgrades extends XenForo_ControllerAdmin_Abstract
 {
 	
+	/**
+	 * @var int	Log entries to show per page
+	 */
 	protected $perPage = 20;
 	
+	/**
+	 * View log entries
+	 * 
+	 * @return	$this->responseView()							
+	 */
 	public function actionLog()
 	{
 		
@@ -28,6 +39,11 @@ class AdvancedUpgrades_ControllerAdmin_AdvancedUpgrades extends XenForo_Controll
 		
 	}
 	
+	/**
+	 * View log entry
+	 * 
+	 * @return	$this->responseView()							
+	 */
 	public function actionView()
 	{
 		$idTransaction = $this->_input->filterSingle('id', XenForo_Input::INT);
@@ -42,6 +58,11 @@ class AdvancedUpgrades_ControllerAdmin_AdvancedUpgrades extends XenForo_Controll
 		));
 	}
 	
+	/**
+	 * View active upgrade entry
+	 * 
+	 * @return	$this->responseView()							
+	 */
 	public function actionViewActive()
 	{
 		$idRecord = $this->_input->filterSingle('id', XenForo_Input::INT);

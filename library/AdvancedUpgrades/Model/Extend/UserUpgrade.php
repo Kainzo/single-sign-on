@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * We need to modify some default model behaviour to allow for advanced functionality such as allowing multiple purchases
+ */
 class AdvancedUpgrades_Model_Extend_UserUpgrade extends XFCP_AdvancedUpgrades_Model_Extend_UserUpgrade
 {
 	
@@ -151,6 +154,12 @@ class AdvancedUpgrades_Model_Extend_UserUpgrade extends XFCP_AdvancedUpgrades_Mo
 		}
 	}
 	
+	/**
+	 * Get transaction log
+	 * 
+	 * @param	array			$fetchOptions
+	 * @return	array
+	 */
 	public function getTransactionLog(array $fetchOptions = array())
 	{
 		$limitOptions = $this->prepareLimitFetchOptions($fetchOptions);
@@ -164,6 +173,13 @@ class AdvancedUpgrades_Model_Extend_UserUpgrade extends XFCP_AdvancedUpgrades_Mo
 		), 'user_upgrade_log_id');
 	}
 	
+	/**
+	 * Get specific log entry
+	 * 
+	 * @param	int			$idTransaction
+	 * 
+	 * @return	array
+	 */
 	public function getTransactionLogEntry($idTransaction)
 	{
 		if (empty($idTransaction))
@@ -179,6 +195,11 @@ class AdvancedUpgrades_Model_Extend_UserUpgrade extends XFCP_AdvancedUpgrades_Mo
 		', $idTransaction);
 	}
 	
+	/**
+	 * Get number of log entries
+	 * 
+	 * @return	int							
+	 */
 	public function getTransactionLogCount()
 	{
 		return $this->_getDb()->fetchOne('

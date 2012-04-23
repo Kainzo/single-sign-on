@@ -1,8 +1,16 @@
 <?php
 
+/**
+ * Advanced Upgrades public controller
+ */
 class AdvancedUpgrades_ControllerPublic_Upgrades extends XenForo_ControllerPublic_Abstract
 {
 	
+	/**
+	 * View available / purchased upgrades
+	 * 
+	 * @return	$this->responseView()
+	 */
 	public function actionIndex()
 	{
 		$upgradeModel = $this->getModelFromCache('XenForo_Model_UserUpgrade');
@@ -23,12 +31,17 @@ class AdvancedUpgrades_ControllerPublic_Upgrades extends XenForo_ControllerPubli
 		return $this->responseView('XenForo_ViewPublic_Base', 'account_upgrades_advanced', $viewParams);
 	}
 	
+	/**
+	 * Purchase an upgrade
+	 * 
+	 * @return	$this->responseView()
+	 */
 	public function actionPurchase()
 	{
 		$visitor = XenForo_Visitor::getInstance();
 		if ($visitor->user_id == 0)
 		{
-			return $this->purchaseGuest();
+			return $this->actionPurchaseGuest();
 		}
 		
 		$upgrade 		= $this->getRequestedUpgrade();
@@ -42,6 +55,49 @@ class AdvancedUpgrades_ControllerPublic_Upgrades extends XenForo_ControllerPubli
 		return $this->responseView('XenForo_ViewPublic_Base', 'account_upgrades_advanced_confirm', $viewParams);
 	}
 	
+	/**
+	 * Purchase upgrade as guest (embed registration form)
+	 * 
+	 * @return	$this->responseView()
+	 */
+	public function actionPurchaseGuest()
+	{
+		$upgrade 		= $this->getRequestedUpgrade();
+		$upgradeId 		= $upgrade['user_upgrade_id'];
+		
+		$upgradeModel 	= $this->getModelFromCache('XenForo_Model_UserUpgrade');
+		$purchaseList 	= $upgradeModel->getUpgradesForPurchaseList();
+		
+		if (!$purchaseList['available'])
+		{
+			return $this->responseMessage(new XenForo_Phrase('no_account_upgrades_can_be_purchased_at_this_time'));
+		}
+		
+		$upgrade = false;
+		foreach ($purchaseList['available'] AS $purchase)
+		{
+			if ($purchase['user_upgrade_id'] == $upgradeId)
+			{
+				$upgrade = $purchase;
+			}
+		}
+		
+		$viewParams = array(
+			'captcha' => XenForo_Captcha_Abstract::createDefault(),
+			'tosUrl' => XenForo_Dependencies_Public::getTosUrl(),
+			
+			'upgrade'	=> $upgrade,
+			'payPalUrl' => 'https://www.paypal.com/cgi-bin/websrc'
+		);
+		
+		return $this->responseView('XenForo_ViewPublic_Base', 'account_upgrades_advanced_register', $viewParams);
+	}
+	
+	/**
+	 * Perform registration and initiate purchase
+	 * 
+	 * @return	$this->responseRedirect()
+	 */
 	public function actionPurchaseRegister()
 	{
 		
@@ -100,12 +156,18 @@ class AdvancedUpgrades_ControllerPublic_Upgrades extends XenForo_ControllerPubli
 		);
 	}
 	
+	/**
+	 * Redirect purchase to paypal
+	 * 
+	 * @return	XenForo_ControllerResponse_View
+	 */
 	public function actionPurchaseRedirect()
 	{
 		$visitor 		= XenForo_Visitor::getInstance();
 		$options 		= XenForo_Application::get('options');
 		$upgrade 		= $this->getRequestedUpgrade();
 		
+		// Differentiate between permanent and recurring upgrades
 		if ($upgrade['length_unit'] AND $upgrade['recurring'])
 		{
 			$params = array(
@@ -125,6 +187,7 @@ class AdvancedUpgrades_ControllerPublic_Upgrades extends XenForo_ControllerPubli
 			);
 		}
 		
+		// If upgrade doesn't have a custom redirect revert back to default
 		if ( ! empty($upgrade['redirect']))
 		{
 			$redirect = XenForo_Link::buildPublicLink('full:upgrades/purchasedRedirect', null, array('upgradeId' => $upgrade['user_upgrade_id']));
@@ -137,6 +200,7 @@ class AdvancedUpgrades_ControllerPublic_Upgrades extends XenForo_ControllerPubli
 		$paths 		= XenForo_Application::getRequestPaths(new Zend_Controller_Request_Http);
 		$baseUrl 	= $paths['fullBasePath'];
 		
+		// Set additional paypal params
 		$params = array_merge($params,array(
 			'business'		=> $options->payPalPrimaryAccount,
 			'currency_code'	=> $upgrade['currency'],
@@ -152,6 +216,7 @@ class AdvancedUpgrades_ControllerPublic_Upgrades extends XenForo_ControllerPubli
 			'notify_url'	=> $baseUrl . 'payment_callback.php'
 		));
 		
+		// Redirect to paypal
 		$url = 'https://www.paypal.com/cgi-bin/websrc?' . http_build_query($params);
 		
 		@header('location: ' . $url);
@@ -162,6 +227,11 @@ class AdvancedUpgrades_ControllerPublic_Upgrades extends XenForo_ControllerPubli
 		return new XenForo_ControllerResponse_View( '' );
 	}
 	
+	/**
+	 * Receives redirect back from paypal after the purchase has been made
+	 * 
+	 * @return	$this->responseRedirect()
+	 */
 	public function actionPurchasedRedirect()
 	{
 		$upgradeId 		= $this->_input->filterSingle('upgradeId', XenForo_Input::INT);
@@ -175,6 +245,7 @@ class AdvancedUpgrades_ControllerPublic_Upgrades extends XenForo_ControllerPubli
 		
 		$redirect = $upgrade['redirect'];
 		
+		// Detect type of redirect value and redirect accordingly
 		if (substr($redirect,0,1) == '/' OR substr($redirect,0,4) == 'http')
 		{
 			@header("location: " . $redirect);
@@ -193,6 +264,11 @@ class AdvancedUpgrades_ControllerPublic_Upgrades extends XenForo_ControllerPubli
 		}
 	}
 	
+	/**
+	 * Show license agreement for upgrade
+	 * 
+	 * @return	$this->responseView()
+	 */
 	public function actionAgreement()
 	{
 		$upgradeId 		= $this->_input->filterSingle('upgradeId', XenForo_Input::INT);
@@ -209,6 +285,10 @@ class AdvancedUpgrades_ControllerPublic_Upgrades extends XenForo_ControllerPubli
 	
 	/**
 	 * Disable CSRF checking
+	 * 
+	 * @param	string			$action
+	 * 
+	 * @return	void|parent::_checkCsrf()
 	 */
 	protected function _checkCsrf($action)
 	{
@@ -220,39 +300,11 @@ class AdvancedUpgrades_ControllerPublic_Upgrades extends XenForo_ControllerPubli
 		parent::_checkCsrf($action);
 	}
 	
-	private function purchaseGuest()
-	{
-		$upgrade 		= $this->getRequestedUpgrade();
-		$upgradeId 		= $upgrade['user_upgrade_id'];
-		
-		$upgradeModel 	= $this->getModelFromCache('XenForo_Model_UserUpgrade');
-		$purchaseList 	= $upgradeModel->getUpgradesForPurchaseList();
-		
-		if (!$purchaseList['available'])
-		{
-			return $this->responseMessage(new XenForo_Phrase('no_account_upgrades_can_be_purchased_at_this_time'));
-		}
-		
-		$upgrade = false;
-		foreach ($purchaseList['available'] AS $purchase)
-		{
-			if ($purchase['user_upgrade_id'] == $upgradeId)
-			{
-				$upgrade = $purchase;
-			}
-		}
-		
-		$viewParams = array(
-			'captcha' => XenForo_Captcha_Abstract::createDefault(),
-			'tosUrl' => XenForo_Dependencies_Public::getTosUrl(),
-			
-			'upgrade'	=> $upgrade,
-			'payPalUrl' => 'https://www.paypal.com/cgi-bin/websrc'
-		);
-		
-		return $this->responseView('XenForo_ViewPublic_Base', 'account_upgrades_advanced_register', $viewParams);
-	}
-	
+	/**
+	 * Get requested upgrade information
+	 * 
+	 * @return	array
+	 */
 	private function getRequestedUpgrade()
 	{
 		if ( ! $upgradeId = $this->_input->filterSingle('upgradeId', XenForo_Input::INT))
