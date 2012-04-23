@@ -134,8 +134,8 @@ class AdvancedUpgrades_ControllerPublic_Upgrades extends XenForo_ControllerPubli
 			$redirect = XenForo_Link::buildPublicLink('full:account/upgrade-purchase');
 		}
 		
-		$params 	= XenForo_Application::getRequestPaths(new Zend_Controller_Request_Http);
-		$baseUrl 	= $params['fullBasePath'];
+		$paths 		= XenForo_Application::getRequestPaths(new Zend_Controller_Request_Http);
+		$baseUrl 	= $paths['fullBasePath'];
 		
 		$params = array_merge($params,array(
 			'business'		=> $options->payPalPrimaryAccount,

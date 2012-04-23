@@ -43,6 +43,11 @@ class AdvancedUpgrades_Listen
 		{
 			$extend[] = 'AdvancedUpgrades_ControllerPublic_Extend_UserUpgrade';
 		}
+		
+		if ($class == 'XenForo_ControllerAdmin_Option' AND ! in_array('AdvancedUpgrades_ControllerAdmin_Extend_Option', $extend))
+		{
+			$extend[] = 'AdvancedUpgrades_ControllerAdmin_Extend_Option';
+		}
 	}
 	
 }
