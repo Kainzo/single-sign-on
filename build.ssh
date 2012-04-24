@@ -1,0 +1,8 @@
+#!/bin/bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+cd $DIR
+
+for f in $(find . -not -path "*.git*"); do touch $f; done
+zip -r XenForo-AdvancedUpgrades-x.x.zip . -x *.git* -x *.ssh* -x *.zip*
