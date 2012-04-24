@@ -6,6 +6,7 @@ AdvancedUpgrades = new function()
 	this.init = function()
 	{
 		$this.events.bind();
+		$this.extendOverlay();
 	};
 	
 	this.events = {
@@ -38,6 +39,33 @@ AdvancedUpgrades = new function()
 			
 			eDataRecv.preventDefault();
 		}
+		
+	};
+	
+	this.extendOverlay = function()
+	{
+		
+		var originalOverlay 	= XenForo.createOverlay;
+		XenForo.createOverlay 	= function($trigger, templateHtml, extraOptions)
+		{
+			var overlay = originalOverlay.call(this, $trigger, templateHtml, extraOptions);
+			var elem 	= overlay.getOverlay();
+			
+			overlay.onLoad = function()
+			{
+				var position= elem.position();
+				elem.css('position', 'absolute');
+				elem.position(position);
+				elem.find(".button[type=reset]").removeAttr('disabled').removeClass('disabled');
+			};
+			
+			overlay.onClose = function()
+			{
+				elem.find('form').trigger('reset');
+			};
+			
+			return overlay;
+		};
 		
 	};
 	
