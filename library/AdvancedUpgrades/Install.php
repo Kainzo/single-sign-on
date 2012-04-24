@@ -57,7 +57,7 @@ class AdvancedUpgrades_Install
 		try
 		{
 			XenForo_Application::getDb()->query("
-				ALTER TABLE `xf_user_upgrade` ADD `redirect` TEXT  NOT NULL  AFTER `description`;
+				ALTER TABLE `xf_user_upgrade` ADD `redirect` TEXT  NOT NULL  AFTER `description`
 			");
 		} catch (Exception $e) {}
 	}
