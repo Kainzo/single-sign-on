@@ -13,10 +13,12 @@ class AdvancedUpgrades_ControllerPublic_Upgrades extends XenForo_ControllerPubli
 	 */
 	public function actionIndex()
 	{
-		$upgradeModel = $this->getModelFromCache('XenForo_Model_UserUpgrade');
+		$options 		= XenForo_Application::get('options');
 		
-		$visitor = XenForo_Visitor::getInstance();
-		$purchaseList = $upgradeModel->getUpgradesForPurchaseList();
+		$upgradeModel 	= $this->getModelFromCache('XenForo_Model_UserUpgrade');
+		
+		$visitor 		= XenForo_Visitor::getInstance();
+		$purchaseList 	= $upgradeModel->getUpgradesForPurchaseList();
 		
 		if ( ! $purchaseList['available'])
 		{
@@ -25,7 +27,8 @@ class AdvancedUpgrades_ControllerPublic_Upgrades extends XenForo_ControllerPubli
 
 		$viewParams = array(
 			'available' => $upgradeModel->prepareUserUpgrades($purchaseList['available']),
-			'purchased' => $upgradeModel->prepareUserUpgrades($purchaseList['purchased'])
+			'purchased' => $upgradeModel->prepareUserUpgrades($purchaseList['purchased']),
+			'usePopup'	=> $options->auuDisablePopin == false
 		);
 		
 		return $this->responseView('XenForo_ViewPublic_Base', 'account_upgrades_advanced', $viewParams);
@@ -62,6 +65,14 @@ class AdvancedUpgrades_ControllerPublic_Upgrades extends XenForo_ControllerPubli
 	 */
 	public function actionPurchaseGuest()
 	{
+		$options 		= XenForo_Application::get('options');
+		
+		// Disable guest purchases
+		if ($options->auuDisableGuest == true)
+		{
+			return $this->responseError(new XenForo_Phrase('login_required'));
+		}
+		
 		$upgrade 		= $this->getRequestedUpgrade();
 		$upgradeId 		= $upgrade['user_upgrade_id'];
 		
@@ -100,6 +111,14 @@ class AdvancedUpgrades_ControllerPublic_Upgrades extends XenForo_ControllerPubli
 	 */
 	public function actionPurchaseRegister()
 	{
+		
+		$options 	= XenForo_Application::get('options');
+		
+		// Disable guest purchases
+		if ($options->auuDisableGuest == true)
+		{
+			return $this->responseError(new XenForo_Phrase('login_required'));
+		}
 		
 		$options 	= XenForo_Application::get('options');
 		$writer 	= XenForo_DataWriter::create('XenForo_DataWriter_User');
