@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="AdvancedUpgrades" title="Advanced User Upgrades" version_string="1.0" version_id="4" url="" install_callback_class="AdvancedUpgrades_Install" install_callback_method="install" uninstall_callback_class="" uninstall_callback_method="">
+<addon addon_id="AdvancedUpgrades" title="Advanced User Upgrades" version_string="1.0.1" version_id="5" url="" install_callback_class="AdvancedUpgrades_Install" install_callback_method="install" uninstall_callback_class="" uninstall_callback_method="">
   <admin_navigation>
     <navigation navigation_id="userUpgradeLog" parent_navigation_id="userUpgrades" display_order="20" link="advanced-upgrades/log" admin_permission_id="viewLogs" debug_only="0" hide_no_children="0"/>
   </admin_navigation>
@@ -338,24 +338,36 @@
   <email_templates/>
   <optiongroups>
     <group group_id="advancedUserUpgrades" display_order="5000" debug_only="0"/>
+    <option option_id="auuDisableGuest" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="advancedUserUpgrades" display_order="10"/>
+    </option>
+    <option option_id="auuDisablePopin" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="advancedUserUpgrades" display_order="20"/>
+    </option>
     <option option_id="auuTerminology" edit_format="select" data_type="string" can_backup="1">
       <default_value></default_value>
       <edit_format_params>default=Default
 custom=Custom (define below)</edit_format_params>
       <sub_options></sub_options>
-      <relation group_id="advancedUserUpgrades" display_order="10"/>
+      <relation group_id="advancedUserUpgrades" display_order="110"/>
     </option>
     <option option_id="auuTerminologyPlural" edit_format="textbox" data_type="string" can_backup="1">
       <default_value></default_value>
       <edit_format_params></edit_format_params>
       <sub_options></sub_options>
-      <relation group_id="advancedUserUpgrades" display_order="30"/>
+      <relation group_id="advancedUserUpgrades" display_order="130"/>
     </option>
     <option option_id="auuTerminologySingular" edit_format="textbox" data_type="string" can_backup="1">
       <default_value></default_value>
       <edit_format_params></edit_format_params>
       <sub_options></sub_options>
-      <relation group_id="advancedUserUpgrades" display_order="20"/>
+      <relation group_id="advancedUserUpgrades" display_order="120"/>
     </option>
   </optiongroups>
   <permissions>
@@ -374,6 +386,10 @@ custom=Custom (define below)</edit_format_params>
     <phrase title="i_agree_to_terms_and_rules_and_agreement" version_id="0" version_string="1.0"><![CDATA[<label>{checkbox} I agree to the</label> <a {terms_attributes}>terms and rules</a> and the  <a {agreement_attributes}>license agreement</a>.]]></phrase>
     <phrase title="new_account_information" version_id="0" version_string="1.0"><![CDATA[New Account Information]]></phrase>
     <phrase title="no_transactions_logged" version_id="0" version_string="1.0"><![CDATA[No transactions have been logged yet]]></phrase>
+    <phrase title="option_auuDisableGuest" version_id="4" version_string="1.0"><![CDATA[Disable Guest Purchases]]></phrase>
+    <phrase title="option_auuDisableGuest_explain" version_id="4" version_string="1.0"><![CDATA[Shows a "you must be registered" error when trying to purchase as a guest (guests can still view the upgrades page, they just can't buy anything without manually registering).]]></phrase>
+    <phrase title="option_auuDisablePopin" version_id="4" version_string="1.0"><![CDATA[Disable Purchase Popup]]></phrase>
+    <phrase title="option_auuDisablePopin_explain" version_id="4" version_string="1.0"><![CDATA[Uses full page purchases instead]]></phrase>
     <phrase title="option_auuTerminology" version_id="3" version_string="1.0 Beta 2 - Fix 1"><![CDATA[Terminology]]></phrase>
     <phrase title="option_auuTerminologyPlural" version_id="4" version_string="1.0"><![CDATA[Custom Terminology (Plural)]]></phrase>
     <phrase title="option_auuTerminologyPlural_explain" version_id="4" version_string="1.0"><![CDATA[eg. Products]]></phrase>
@@ -385,6 +401,8 @@ custom=Custom (define below)</edit_format_params>
     <phrase title="processor" version_id="0" version_string="1.0"><![CDATA[Processor]]></phrase>
     <phrase title="purchaseable_multiple_times" version_id="0" version_string="1.0"><![CDATA[Can be purchased multiple times]]></phrase>
     <phrase title="record_id" version_id="0" version_string="1.0"><![CDATA[Record ID]]></phrase>
+    <phrase title="register_to_upgrade" version_id="5" version_string="1.0.1"><![CDATA[In order to purchase any item you will need to register an account, please provide the following details to complete your purchase.
+If you are already registered, please {login} first.]]></phrase>
     <phrase title="sure_you_want_to_purchase_upgrade" version_id="0" version_string="1.0"><![CDATA[Are you sure you want to purchase "{upgrade}"?]]></phrase>
     <phrase title="transaction_details" version_id="0" version_string="1.0"><![CDATA[Transaction Details]]></phrase>
     <phrase title="transaction_id" version_id="0" version_string="1.0"><![CDATA[Transaction ID]]></phrase>
@@ -403,9 +421,10 @@ custom=Custom (define below)</edit_format_params>
   </route_prefixes>
   <style_properties/>
   <templates>
-    <template title="account_upgrades_advanced" version_id="1" version_string="1.0 Beta 1"><![CDATA[<xen:title>{xen:phrase account_upgrades}</xen:title>
+    <template title="account_upgrades_advanced" version_id="4" version_string="1.0"><![CDATA[<xen:title>{xen:phrase account_upgrades}</xen:title>
 
 <xen:require css="account_upgrades.css" />
+<xen:require js="js/advancedupgrades/advancedupgrades.js" />
 
 <xen:navigation>
     <xen:breadcrumb href="{xen:link 'upgrades'}">{xen:phrase account_upgrades}</xen:breadcrumb>
@@ -420,7 +439,11 @@ custom=Custom (define below)</edit_format_params>
 				<div class="upgrade">	
 					<div class="upgradeForm">
 						<div class="cost">{$upgrade.costPhrase}</div>
- 						<input type="button" value="{xen:phrase purchase}" class="button OverlayTrigger" data-href="{xen:link 'upgrades/purchase', '', 'upgradeId={$upgrade.user_upgrade_id}'}" />
+						<xen:if is="{$usePopup}">
+							<input type="button" value="{xen:phrase purchase}" class="button OverlayTrigger" data-href="{xen:link 'upgrades/purchase', '', 'upgradeId={$upgrade.user_upgrade_id}'}" />
+						<xen:else/>
+							<a class="button" href="{xen:link 'upgrades/purchase', '', 'upgradeId={$upgrade.user_upgrade_id}'}">{xen:phrase purchase}</a>
+						</xen:if>
 					</div>
 					<div class="upgradeMain">
 						<h4 class="title">{$upgrade.title}</h4>
@@ -502,7 +525,7 @@ custom=Custom (define below)</edit_format_params>
 		</dl>
 
 </form>]]></template>
-    <template title="account_upgrades_advanced_register" version_id="1" version_string="1.0 Beta 1"><![CDATA[<xen:title>{xen:phrase new_account_information}</xen:title>
+    <template title="account_upgrades_advanced_register" version_id="5" version_string="1.0.1"><![CDATA[<xen:title>{xen:phrase new_account_information}</xen:title>
 
 <xen:require js="js/advancedupgrades/advancedupgrades.js" />
 
@@ -525,7 +548,7 @@ custom=Custom (define below)</edit_format_params>
 		</div>
 	
 	<div class="textHeading">
-		In order to purchase any item you will need to register an account, please provide the following details to complete your purchase.
+		{xen:phrase register_to_upgrade, 'login=<a href="{xen:link login}">{xen:phrase login}</a>'}
 	</div>
 
 	<dl class="ctrlUnit">
@@ -626,7 +649,12 @@ custom=Custom (define below)</edit_format_params>
 	</dl>
 
 </form>]]></template>
-    <template title="account_upgrade_agreement" version_id="0" version_string="1.0"><![CDATA[{xen:raw $upgrade.agreement}]]></template>
+    <template title="account_upgrade_agreement" version_id="4" version_string="1.0"><![CDATA[<xen:navigation>
+    <xen:breadcrumb href="{xen:link 'upgrades'}">{xen:phrase account_upgrades}</xen:breadcrumb>
+    <xen:breadcrumb href="{xen:link 'upgrades'}">{xen:phrase agreement}: {$upgrade.title}</xen:breadcrumb>
+</xen:navigation>
+
+{xen:raw $upgrade.agreement}]]></template>
   </templates>
   <bb_code_media_sites/>
   <template_modifications/>
