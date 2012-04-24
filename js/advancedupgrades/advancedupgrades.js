@@ -58,7 +58,7 @@ AdvancedUpgrades = new function()
 				elem.position(position);
 				elem.find(".button[type=reset]").removeAttr('disabled').removeClass('disabled');
 				
-				elem.find(".button[type=submit]").click(function() {
+				elem.find(".Disabler").click(function() {
 					setTimeout(function() {
 						elem.find(".button[type=reset]").removeAttr('disabled').removeClass('disabled');
 					}, 100);
