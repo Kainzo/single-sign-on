@@ -57,6 +57,12 @@ AdvancedUpgrades = new function()
 				elem.css('position', 'absolute');
 				elem.position(position);
 				elem.find(".button[type=reset]").removeAttr('disabled').removeClass('disabled');
+				
+				elem.find(".button[type=submit]").click(function() {
+					setTimeout(function() {
+						elem.find(".button[type=reset]").removeAttr('disabled').removeClass('disabled');
+					}, 100);
+				});
 			};
 			
 			overlay.onClose = function()
