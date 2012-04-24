@@ -292,7 +292,7 @@ class AdvancedUpgrades_ControllerPublic_Upgrades extends XenForo_ControllerPubli
 	 */
 	protected function _checkCsrf($action)
 	{
-		if (strtolower($action) == 'actionpurchasedredirect')
+		if (strtolower($action) == 'actionPurchasedRedirect')
 		{
 			return;
 		}
