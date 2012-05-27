@@ -311,7 +311,7 @@ class AdvancedUpgrades_ControllerPublic_Upgrades extends XenForo_ControllerPubli
 	 */
 	protected function _checkCsrf($action)
 	{
-		if (strtolower($action) == 'actionPurchasedRedirect')
+		if (strtolower($action) == 'actionpurchasedredirect')
 		{
 			return;
 		}
@@ -324,7 +324,7 @@ class AdvancedUpgrades_ControllerPublic_Upgrades extends XenForo_ControllerPubli
 	 * 
 	 * @return	array
 	 */
-	private function getRequestedUpgrade()
+	protected function getRequestedUpgrade()
 	{
 		if ( ! $upgradeId = $this->_input->filterSingle('upgradeId', XenForo_Input::INT))
 		{
