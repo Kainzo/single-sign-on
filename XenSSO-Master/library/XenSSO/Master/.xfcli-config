@@ -1,0 +1,8 @@
+{
+	"addon":	{
+		"id":	"xensso_master",
+		"name":	"XenSSO - Master",
+		"namespace":	"Xensso_Master",
+		"path":	"/library/XenSSO/Master/"
+	}
+}

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<addon addon_id="xensso_slave" title="XenSSO - Slave" version_string="1.0.7" version_id="22" url="" install_callback_class="XenSSO_Slave_Install" install_callback_method="install" uninstall_callback_class="XenSSO_Slave_Install" uninstall_callback_method="uninstall">
+  <admin_navigation>
+    <navigation navigation_id="xenssoSlaveSync" parent_navigation_id="xenssoSlaveTools" display_order="100" link="xensso-sync" admin_permission_id="user" debug_only="0" hide_no_children="0"/>
+    <navigation navigation_id="xenssoSlaveTools" parent_navigation_id="tools" display_order="5000" link="" admin_permission_id="user" debug_only="0" hide_no_children="1"/>
+  </admin_navigation>
+  <admin_permissions/>
+  <admin_style_properties/>
+  <admin_templates>
+    <template title="xensso_user_sync"><![CDATA[<xen:require js="js/xensso/sync.js" />
+
+<xen:title>{xen:phrase xensso_sync}</xen:title>
+
+<p>Synchronizing users to master, please do not close this window.</p>
+<iframe id="xensso_iframe" src="{xen:adminlink xensso-sync/syncProcess}" style="width: 1px; height: 1px;" frameBorder="0"></iframe>
+
+<div class="titleBar"></div>
+
+<div class="titleBar">
+	<h1>Progress (<a href="#" id="xensso_pause">pause</a>)</h1>
+</div>
+
+<div>
+<span id="xensso_progress_pending">Working..</span>
+<span id="xensso_progress"></span>
+</div>
+
+<div class="titleBar" style="margin-top: 15px">
+	<h1>Failed Users (<span id="xensso_failed_count">0</span>)</h1>	
+</div>
+
+<div id="xensso_failed_empty">None yet</div>
+<div id="xensso_failed" style="max-height: 200px; overflow: auto;"></div>]]></template>
+    <template title="xensso_user_sync_confirm"><![CDATA[<xen:title>{xen:phrase xensso_sync}</xen:title>
+
+<xen:form action="{xen:adminlink xensso-sync/sync}">
+	
+	<blockquote class="baseHtml">{xen:phrase xensso_user_sync_description, 'button={xen:phrase xensso_start_sync}'}</blockquote>
+		
+	<xen:submitunit save="{xen:phrase xensso_start_sync}" />
+	
+</xen:form>]]></template>
+  </admin_templates>
+  <code_events/>
+  <code_event_listeners>
+    <listener event_id="load_class_controller" execute_order="10" callback_class="XenSSO_Slave_Listen" callback_method="load_class_controller" active="1" description=""/>
+    <listener event_id="load_class_datawriter" execute_order="10" callback_class="XenSSO_Slave_Listen" callback_method="load_class_datawriter" active="1" description=""/>
+    <listener event_id="template_hook" execute_order="10" callback_class="XenSSO_Slave_Listen" callback_method="template_hook" active="1" description=""/>
+  </code_event_listeners>
+  <cron/>
+  <email_templates/>
+  <optiongroups>
+    <group group_id="xensso_slave" display_order="5000" debug_only="0"/>
+    <option option_id="XenSSOMasterUrl" edit_format="textbox" data_type="string" can_backup="1" validation_class="XenSSO_Slave_Validate" validation_method="optionMasterUrl">
+      <default_value>https://xenssomaster.com/</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="xensso_slave" display_order="10"/>
+    </option>
+    <option option_id="XenSSOSlaveSecretPrivate" edit_format="textbox" data_type="string" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="xensso_slave" display_order="20"/>
+    </option>
+    <option option_id="XenSSOSlaveSecretPublic" edit_format="textbox" data_type="string" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="xensso_slave" display_order="30"/>
+    </option>
+  </optiongroups>
+  <permissions>
+    <permission_groups/>
+    <permissions/>
+    <interface_groups/>
+  </permissions>
+  <phrases>
+    <phrase title="admin_navigation_xenssoSlaveSync" version_id="8" version_string="beta 8"><![CDATA[Synchronize Users]]></phrase>
+    <phrase title="admin_navigation_xenssoSlaveTools" version_id="8" version_string="beta 8"><![CDATA[XenSSO]]></phrase>
+    <phrase title="option_group_xensso_slave" version_id="0" version_string="0.1"><![CDATA[XenSSO - Slave]]></phrase>
+    <phrase title="option_group_xensso_slave_description" version_id="0" version_string="0.1"><![CDATA[]]></phrase>
+    <phrase title="option_XenSSOMasterUrl" version_id="0" version_string="0.1"><![CDATA[Master Server Url]]></phrase>
+    <phrase title="option_XenSSOMasterUrl_explain" version_id="2" version_string="beta 3"><![CDATA[Enter the URL of the XF install that will serve as the master server. The value should be the same as you've entered for the "Board Url" option on the master server.<br/>
+Needs to have a trailing slash.]]></phrase>
+    <phrase title="option_XenSSOSlaveSecretPrivate" version_id="2" version_string="beta 3"><![CDATA[Secret Key (private)]]></phrase>
+    <phrase title="option_XenSSOSlaveSecretPrivate_explain" version_id="2" version_string="beta 3"><![CDATA[This key will be used to encrypt private data send from slave to master, you can <a href="http://strongpasswordgenerator.com/" target="_blank">generate one here</a>. Longer is better. This key has to match the one you entered on the XenSSO-Master server!]]></phrase>
+    <phrase title="option_XenSSOSlaveSecretPublic" version_id="2" version_string="beta 3"><![CDATA[Secret Key (public)]]></phrase>
+    <phrase title="option_XenSSOSlaveSecretPublic_explain" version_id="2" version_string="beta 3"><![CDATA[This key will be used to encrypt public data send from slave to master, you can <a href="http://strongpasswordgenerator.com/" target="_blank">generate one here</a>. Longer is better. This key has to match the one you entered on the XenSSO-Master server!]]></phrase>
+    <phrase title="xensso_slave_login_failed_noreg" version_id="2" version_string="beta 3"><![CDATA[Single sign on could not complete, auto login and registration failed. ]]></phrase>
+    <phrase title="xensso_slave_missing_identity" version_id="2" version_string="beta 3"><![CDATA[Single Sign On could not find your OpenID Identity]]></phrase>
+    <phrase title="xensso_slave_registration_missing_or_duplicate" version_id="6" version_string="beta 6"><![CDATA[Single Sign On could not complete as your profile could not be validated, possibly your username is already taken, a duplicate was found or you do not meet the age requirements.]]></phrase>
+    <phrase title="xensso_start_sync" version_id="8" version_string="beta 8"><![CDATA[Start Synchronization]]></phrase>
+    <phrase title="xensso_sync" version_id="8" version_string="beta 8"><![CDATA[XenSSO User Synchronization]]></phrase>
+    <phrase title="xensso_user_sync_description" version_id="8" version_string="beta 8"><![CDATA[<p>This will synchronize all users on the local install to the configured XenSSO Master.</p>
+				
+<p>Usernames or email addresses that are already in use on the master will not be synched. Likewise users that do not meet the age requirement on the master will also not be synced.</p>
+			
+<p>Click the <b>{button}</b> button below to start the one-way synchronization.</p>]]></phrase>
+  </phrases>
+  <route_prefixes>
+    <route_type type="admin">
+      <prefix original_prefix="xensso-sync" class="XenSSO_Slave_PrefixAdmin_Sync" build_link="all"/>
+    </route_type>
+    <route_type type="public">
+      <prefix original_prefix="sso-slave" class="XenSSO_Slave_RoutePrefix_Consumer" build_link="all"/>
+      <prefix original_prefix="sync-slave" class="XenSSO_Slave_RoutePrefix_Sync" build_link="all"/>
+    </route_type>
+  </route_prefixes>
+  <style_properties/>
+  <templates/>
+  <bb_code_media_sites/>
+</addon>

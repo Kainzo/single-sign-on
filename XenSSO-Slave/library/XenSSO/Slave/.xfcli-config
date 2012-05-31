@@ -1,0 +1,8 @@
+{
+	"addon":	{
+		"id":	"xensso_slave",
+		"name":	"XenSSO - Slave",
+		"namespace":	"XenSSO_Slave",
+		"path":	"/library/XenSSO/Slave/"
+	}
+}

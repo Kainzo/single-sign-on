@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<addon addon_id="xensso_master" title="XenSSO - Master" version_string="1.0.7" version_id="22" url="" install_callback_class="XenSSO_Master_Install" install_callback_method="install" uninstall_callback_class="XenSSO_Master_Install" uninstall_callback_method="uninstall">
+  <admin_navigation/>
+  <admin_permissions/>
+  <admin_style_properties/>
+  <admin_templates/>
+  <code_events/>
+  <code_event_listeners>
+    <listener event_id="load_class_datawriter" execute_order="10" callback_class="XenSSO_Master_Listen" callback_method="load_class_datawriter" active="1" description=""/>
+  </code_event_listeners>
+  <cron/>
+  <email_templates/>
+  <optiongroups>
+    <group group_id="xensso_master" display_order="5000" debug_only="0"/>
+    <option option_id="XenSSOAllowedDomains" edit_format="textbox" data_type="string" can_backup="1" validation_class="XenSSO_Master_Validate" validation_method="optionAllowedDomains">
+      <default_value>xenssoslave1.com
+xenssoslave2.com
+xenssoslave3.com</default_value>
+      <edit_format_params>rows=2
+inputclass=Elastic</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="xensso_master" display_order="10"/>
+    </option>
+    <option option_id="XenSSOMasterSecretPrivate" edit_format="textbox" data_type="string" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="xensso_master" display_order="20"/>
+    </option>
+    <option option_id="XenSSOMasterSecretPublic" edit_format="textbox" data_type="string" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="xensso_master" display_order="30"/>
+    </option>
+  </optiongroups>
+  <permissions>
+    <permission_groups/>
+    <permissions/>
+    <interface_groups/>
+  </permissions>
+  <phrases>
+    <phrase title="option_group_xensso_master" version_id="0" version_string="0.1"><![CDATA[XenSSO - Master]]></phrase>
+    <phrase title="option_group_xensso_master_description" version_id="0" version_string="0.1"><![CDATA[]]></phrase>
+    <phrase title="option_XenSSOAllowedDomains" version_id="2" version_string="beta 3"><![CDATA[Allowed Domains]]></phrase>
+    <phrase title="option_XenSSOAllowedDomains_explain" version_id="2" version_string="beta 3"><![CDATA[Enter domains that are automatically allowed to use this site for authentication.]]></phrase>
+    <phrase title="option_XenSSOMasterSecretPrivate" version_id="2" version_string="beta 3"><![CDATA[Secret Key (private)]]></phrase>
+    <phrase title="option_XenSSOMasterSecretPrivate_explain" version_id="2" version_string="beta 3"><![CDATA[This key will be used to decrypt private data send from slave to master, you can <a href="http://strongpasswordgenerator.com/" target="_blank">generate one here</a>. Longer is better.]]></phrase>
+    <phrase title="option_XenSSOMasterSecretPublic" version_id="2" version_string="beta 3"><![CDATA[Secret Key (public)]]></phrase>
+    <phrase title="option_XenSSOMasterSecretPublic_explain" version_id="2" version_string="beta 3"><![CDATA[This key will be used to decrypt public data send from slave to master, you can <a href="http://strongpasswordgenerator.com/" target="_blank">generate one here</a>. Longer is better.]]></phrase>
+    <phrase title="xensso_master_login_failed" version_id="3" version_string="beta 5"><![CDATA[Single Sign On Provider failed to authenticate and no return URL was provided.]]></phrase>
+  </phrases>
+  <route_prefixes>
+    <route_type type="public">
+      <prefix original_prefix="sso" class="XenSSO_Master_RoutePrefix_Provider" build_link="all"/>
+      <prefix original_prefix="sync" class="XenSSO_Master_RoutePrefix_Sync" build_link="all"/>
+    </route_type>
+  </route_prefixes>
+  <style_properties/>
+  <templates/>
+  <bb_code_media_sites/>
+  <template_modifications/>
+</addon>
