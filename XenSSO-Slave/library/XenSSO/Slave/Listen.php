@@ -6,6 +6,19 @@
  */
 class XenSSO_Slave_Listen
 {
+	
+	public static $_authKey = false;
+	
+	public static function controller_pre_dispatch(XenForo_Controller $controller, $action)
+	{
+		$session = XenForo_Application::get('session');
+		
+		if ($session->get('xensso_auth_key'))
+		{
+			self::$_authKey = $session->get('xensso_auth_key');
+			$session->remove('xensso_auth_key');
+		}
+	}
 
 	public static function load_class_controller($class, array &$extend)
 	{
@@ -78,7 +91,6 @@ class XenSSO_Slave_Listen
 		
 		// Get info about visitor and session, and get XF options
 		$visitor 	= XenForo_Visitor::getInstance();
-		$session 	= new Zend_Session_Namespace('XenSSO_Slave');
 		$options 	= XenForo_Application::get('options');
 		
 		// Set default action, in case neither of the following statements trigger
@@ -86,12 +98,12 @@ class XenSSO_Slave_Listen
 		
 		// Check if we have an auth key
 		// in case we do we need to try to transparently login on the master
-		if ($session->xensso_auth_key AND $visitor->user_id > 0)
+		if (self::$_authKey AND $visitor->user_id > 0)
 		{
 			// Set and encrypt auth data
 			$authData	= XenSSO_Shared_Secure::encrypt(array(
 				'email'	=> $visitor->email,
-				'key'	=> $session->xensso_auth_key
+				'key'	=> self::$_authKey
 			));
 			
 			// Append javascript to contents
@@ -102,9 +114,6 @@ class XenSSO_Slave_Listen
 			
 			// Update include variable so it knows we added content
 			$include = true;
-			
-			// Delete session variable
-			$session->xensso_auth_key = false;
 		}
 		
 		// Check if the user is not logged in, and if so, include javascript to login transparently
@@ -112,22 +121,25 @@ class XenSSO_Slave_Listen
 		{
 			
 			// Get visitor session
-			$vsession = XenForo_Session::getPublicSession( new Zend_Controller_Request_Http )->getAll();
+			$session = XenForo_Application::get('session');
+			$attempt = isset($_COOKIE['attemptLogin']) ? $_COOKIE['attemptLogin'] : false;
 			
 			// Check if this is a fresh session, we don't want to do this every time someone switches to another page
-			if ( ! isset($vsession['previousActivity']) AND ! isset($session->attemptLogin))
+			if ( ! $session->get('previousActivity') AND ! $attempt)
 			{
 				// Append javascript to contents
-				$contents 	.= '<script>
-				var xensso_attempt_login = true;
-				var xensso_master_url = "'.$options->XenSSOMasterUrl.'";
-			</script>';
+				$contents 	.= '
+					<script>
+						var xensso_attempt_login = true;
+						var xensso_master_url = "'.$options->XenSSOMasterUrl.'";
+					</script>
+				';
 			
 				// Update include variable so it knows we added content
 				$include = true;
 				
 				// Update session so it doesn't try this again
-				$session->attemptLogin = true;
+				setcookie('attemptLogin', true);
 			}
 		}
 		

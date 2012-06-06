@@ -263,10 +263,10 @@ class XenSSO_Slave_Controller_Consumer extends XenForo_ControllerPublic_Abstract
 		if (empty($identity))
 		{
 			// Get XenSSO session
-			$session 	= new Zend_Session_Namespace('XenSSO_Slave');
+			$session 	= XenForo_Application::get('session');
 			
 			// Check if username is set in session
-			if ( ! isset($session->userName))
+			if ( ! $session->get('userName'))
 			{
 				return null;
 			}
@@ -274,7 +274,7 @@ class XenSSO_Slave_Controller_Consumer extends XenForo_ControllerPublic_Abstract
 			// Formulate identity
 			$options 	= XenForo_Application::get('options');
 			$masterUrl 	= $options->XenSSOMasterUrl;
-			$identity 	= $masterUrl . 'index.php?sso/' . urlencode($session->userName);
+			$identity 	= $masterUrl . 'index.php?sso/' . urlencode($session->get('userName'));
 		}
 		
 		return $identity;
@@ -299,16 +299,16 @@ class XenSSO_Slave_Controller_Consumer extends XenForo_ControllerPublic_Abstract
 	protected function getCallbackParams()
 	{
 		// Try to get redirect address from XenSSO session, otherwise use $this->getDynamicRedirect()
-		$session 	= new Zend_Session_Namespace('XenSSO_Slave');
-		$redirect 	= isset($session->redirect) ? $session->redirect : $this->getDynamicRedirect();
+		$session 	= XenForo_Application::get('session');
+		$redirect 	= $session->get('redirect') ? $session->get('redirect') : $this->getDynamicRedirect();
 		
 		// Set default required params
 		$params 	= array( 'redirect' => $redirect, 'username' => basename($this->getIdentity()) );
 		
 		// Append additional params, if any
-		if (isset($session->callbackParams))
+		if ($session->get('callbackParams'))
 		{
-			$params = array_merge($params,$session->callbackParams);
+			$params = array_merge($params,$session->get('callbackParams'));
 		}
 		
 		return $params;
@@ -321,8 +321,8 @@ class XenSSO_Slave_Controller_Consumer extends XenForo_ControllerPublic_Abstract
 	 */
 	protected function getRequestParams()
 	{
-		$session = new Zend_Session_Namespace('XenSSO_Slave');
-		return isset($session->requestParams) ? $session->requestParams : array();
+		$session = XenForo_Application::get('session');
+		return $session->get('requestParams') ? $session->get('requestParams') : array();
 	}
 	
 	/**

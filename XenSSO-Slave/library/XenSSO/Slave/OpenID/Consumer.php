@@ -72,17 +72,12 @@ class XenSSO_Slave_OpenID_Consumer extends Zend_OpenId_Consumer
 
         if ($version <= 2.0) {
             if ($this->_session !== null) {
-                $this->_session->identity = $id;
-                $this->_session->claimed_id = $claimedId;
-            } else if (defined('SID')) {
-                $_SESSION["zend_openid"] = array(
-                    "identity" => $id,
-                    "claimed_id" => $claimedId);
+                $this->_session->set('identity', $id);
+                $this->_session->set('claimed_id', $claimedId);
             } else {
-                require_once "Zend/Session/Namespace.php";
-                $this->_session = new Zend_Session_Namespace("zend_openid");
-                $this->_session->identity = $id;
-                $this->_session->claimed_id = $claimedId;
+                $this->_session = XenForo_Application::get('session');
+                $this->_session->set('identity', $id);
+                $this->_session->set('claimed_id', $claimedId);
             }
         }
 

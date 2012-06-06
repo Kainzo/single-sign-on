@@ -48,20 +48,20 @@ class XenSSO_Slave_Controller_Extend_Login extends XFCP_XenSSO_Slave_Controller_
 		$authData = XenSSO_Shared_Secure::encrypt($data);
 		
 		// Store relevant data in session
-		$session = new Zend_Session_Namespace('XenSSO_Slave');
-		$session->userName 	= $data['login']; // used in consumer -> getIdentity
-		$session->redirect 	= empty($data['redirect']) ? $this->getDynamicRedirect() : $data['redirect']; // used in consumer -> getReturnTo
+		$session = XenForo_Application::get('session');
+		$session->set('userName',  $data['login']); // used in consumer -> getIdentity
+		$session->set('redirect',  empty($data['redirect']) ? $this->getDynamicRedirect() : $data['redirect']); // used in consumer -> getReturnTo
 		
 		// Set callback params, will be used on callback url's after the provider is done
-		$session->callbackParams = array(
+		$session->set('callbackParams', array(
 			'errorType'	=> $error->getPhraseName()
-		);
+		));
 		
 		// Set request params, to be send along with the OpenID request
-		$session->requestParams = array(
+		$session->set('requestParams', array(
 			'authData'	=> $authData,
 			'prompts'	=> 0
-		);
+		));
 		
 		// Redirect to OpenID login page
 		return parent::responseRedirect(

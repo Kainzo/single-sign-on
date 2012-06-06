@@ -249,7 +249,7 @@ class XenSSO_Master_Controller_Provider extends XenForo_ControllerPublic_Abstrac
 	 */
 	protected function getParams($resetSession = false)
 	{
-		$session = new Zend_Session_Namespace('XenSSO-Provider');
+		$session = XenForo_Application::get('session');
 		
 		// Figure out where to get the params from (GET, POST or SESSION)
 		if ($_SERVER["REQUEST_METHOD"] == "GET" AND isset($_GET['openid_mode'])) 
@@ -260,9 +260,9 @@ class XenSSO_Master_Controller_Provider extends XenForo_ControllerPublic_Abstrac
 		{
 			$result = $_POST;
 		} 
-		else if (isset($session->openid_identity)) 
+		else if ($session->get('sso_params')) 
 		{
-			$result = $_SESSION[$session->getNamespace()];
+			$result = unserialize($session->get('sso_params'));
 		} 
 		else 
 		{
@@ -279,14 +279,11 @@ class XenSSO_Master_Controller_Provider extends XenForo_ControllerPublic_Abstrac
 		// Reset session variables if requested
 		if ($resetSession)
 		{
-			$session->unsetAll();
+			$session->remove('sso_params');
 		}
 		else
 		{
-			foreach ($result AS $k => $v)
-			{
-				$session->{$k} = $v;
-			}
+			$session->set('sso_params', serialize($result));
 		}
 
 		return $result;

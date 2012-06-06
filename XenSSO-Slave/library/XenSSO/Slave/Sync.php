@@ -71,8 +71,10 @@ class XenSSO_Slave_Sync
 			}
 			
 			// Save auth key in session
-			$session = new Zend_Session_Namespace('XenSSO_Slave');
-			$session->xensso_auth_key = $result;
+			$session = XenForo_Application::get('session');
+			$session->set('xensso_auth_key', $result);
+			
+			XenSSO_Slave_Listen::$_authKey = $result;
 		}
 	}
 	
