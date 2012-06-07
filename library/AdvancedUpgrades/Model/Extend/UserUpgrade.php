@@ -156,18 +156,30 @@ class AdvancedUpgrades_Model_Extend_UserUpgrade extends XFCP_AdvancedUpgrades_Mo
 	
 	/**
 	 * Get transaction log
-	 * 
+	 *
+	 * @param  	array 			$criteria
 	 * @param	array			$fetchOptions
+	 * 
 	 * @return	array
 	 */
-	public function getTransactionLog(array $fetchOptions = array())
+	public function getTransactionLog(array $criteria, array $fetchOptions = array())
 	{
+		$db = $this->_getDb();
+		
 		$limitOptions = $this->prepareLimitFetchOptions($fetchOptions);
+		
+		$whereClause = '';
+		if (isset($criteria['search']))
+		{
+			$s = $db->quote($criteria['search']);
+			$whereClause = 'WHERE transaction_id LIKE ' . $s . ' OR message LIKE ' . $s . ' OR transaction_details LIKE ' . $s;
+		}
 		
 		return $this->fetchAllKeyed($this->limitQueryResults(
 			'
 				SELECT *
 				FROM xf_user_upgrade_log
+				' . $whereClause . '
 				ORDER BY log_date DESC
 			', $limitOptions['limit'], $limitOptions['offset']
 		), 'user_upgrade_log_id');
