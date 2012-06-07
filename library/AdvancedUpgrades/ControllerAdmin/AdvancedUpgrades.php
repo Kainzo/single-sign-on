@@ -9,7 +9,7 @@ class AdvancedUpgrades_ControllerAdmin_AdvancedUpgrades extends XenForo_Controll
 	/**
 	 * @var int	Log entries to show per page
 	 */
-	protected $perPage = 5;
+	protected $perPage = 100;
 	
 	/**
 	 * View log entries
@@ -58,7 +58,7 @@ class AdvancedUpgrades_ControllerAdmin_AdvancedUpgrades extends XenForo_Controll
 		
 		$view = $filterView ? 'advancedupgrades_transaction_log_items' : 'advancedupgrades_transaction_log';
 		
-		return $this->responseView('AdvancedUpgrades_View_AdvancedUpgrades', $view, array(
+		return $this->responseView('AdvancedUpgrades_ViewAdmin_AdvancedUpgrades', $view, array(
 			'linkParams' 	=> array('criteria' => $criteria, 'order' => $order, 'direction' => $direction),
 			'total' 		=> $upgradeModel->getTransactionLogCount(),
 			'page' 			=> $inputData->page,
@@ -82,7 +82,7 @@ class AdvancedUpgrades_ControllerAdmin_AdvancedUpgrades extends XenForo_Controll
 		
 		$transaction['transaction_details'] = unserialize($transaction['transaction_details']);
 		
-		return $this->responseView('AdvancedUpgrades_View_AdvancedUpgrades', 'advancedupgrades_transaction_log_view', array(
+		return $this->responseView('AdvancedUpgrades_ViewAdmin_AdvancedUpgrades', 'advancedupgrades_transaction_log_view', array(
 			'transaction' => $transaction
 		));
 	}
@@ -101,7 +101,7 @@ class AdvancedUpgrades_ControllerAdmin_AdvancedUpgrades extends XenForo_Controll
 		
 		$record['extra'] = unserialize($record['extra']);
 		
-		return $this->responseView('AdvancedUpgrades_View_AdvancedUpgrades', 'advancedupgrades_active_record_view', array(
+		return $this->responseView('AdvancedUpgrades_ViewAdmin_AdvancedUpgrades', 'advancedupgrades_active_record_view', array(
 			'record' => $record
 		));
 	}

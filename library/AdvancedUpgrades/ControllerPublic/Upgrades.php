@@ -31,7 +31,7 @@ class AdvancedUpgrades_ControllerPublic_Upgrades extends XenForo_ControllerPubli
 			'usePopup'	=> $options->auuDisablePopin == false
 		);
 		
-		return $this->responseView('AdvancedUpgrades_View_AdvancedUpgrades', 'account_upgrades_advanced', $viewParams);
+		return $this->responseView('XenForo_ViewPublic_Base', 'account_upgrades_advanced', $viewParams);
 	}
 	
 	/**
@@ -55,7 +55,7 @@ class AdvancedUpgrades_ControllerPublic_Upgrades extends XenForo_ControllerPubli
 			'payPalUrl' => 'https://www.paypal.com/cgi-bin/websrc'
 		);
 		
-		return $this->responseView('AdvancedUpgrades_View_AdvancedUpgrades', 'account_upgrades_advanced_confirm', $viewParams);
+		return $this->responseView('XenForo_ViewPublic_Base', 'account_upgrades_advanced_confirm', $viewParams);
 	}
 	
 	/**
@@ -101,7 +101,7 @@ class AdvancedUpgrades_ControllerPublic_Upgrades extends XenForo_ControllerPubli
 			'payPalUrl' => 'https://www.paypal.com/cgi-bin/websrc'
 		);
 		
-		return $this->responseView('AdvancedUpgrades_View_AdvancedUpgrades', 'account_upgrades_advanced_register', $viewParams);
+		return $this->responseView('XenForo_ViewPublic_Base', 'account_upgrades_advanced_register', $viewParams);
 	}
 	
 	/**
@@ -299,7 +299,7 @@ class AdvancedUpgrades_ControllerPublic_Upgrades extends XenForo_ControllerPubli
 			throw new XenForo_Exception(new XenForo_Phrase('requested_user_upgrade_not_found'), true);
 		}
 		
-		return $this->responseView('AdvancedUpgrades_View_AdvancedUpgrades', 'account_upgrade_agreement', array('upgrade' => $upgrade));
+		return $this->responseView('XenForo_ViewPublic_Base', 'account_upgrade_agreement', array('upgrade' => $upgrade));
 	}
 	
 	/**
@@ -311,7 +311,7 @@ class AdvancedUpgrades_ControllerPublic_Upgrades extends XenForo_ControllerPubli
 	 */
 	protected function _checkCsrf($action)
 	{
-		if (strtolower($action) == 'actionpurchasedredirect')
+		if (strtolower($action) == 'purchasedredirect')
 		{
 			return;
 		}
