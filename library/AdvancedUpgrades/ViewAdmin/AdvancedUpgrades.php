@@ -1,6 +1,6 @@
 <?php
 
-class AdvancedUpgrades_View_AdvancedUpgrades extends XenForo_ViewAdmin_Base
+class AdvancedUpgrades_ViewAdmin_AdvancedUpgrades extends XenForo_ViewAdmin_Base
 {
 	
 	protected $_renderJson = true;

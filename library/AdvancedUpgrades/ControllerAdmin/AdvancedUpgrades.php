@@ -80,6 +80,11 @@ class AdvancedUpgrades_ControllerAdmin_AdvancedUpgrades extends XenForo_Controll
 		$upgradeModel 	= $this->getModelFromCache('XenForo_Model_UserUpgrade');
 		$transaction 	= $upgradeModel->getTransactionLogEntry($idTransaction);
 		
+		if ( ! $transaction)
+		{
+			return $this->responseError(new XenForo_Phrase('requested_record_not_found'));
+		}
+		
 		$transaction['transaction_details'] = unserialize($transaction['transaction_details']);
 		
 		return $this->responseView('AdvancedUpgrades_ViewAdmin_AdvancedUpgrades', 'advancedupgrades_transaction_log_view', array(
@@ -98,6 +103,11 @@ class AdvancedUpgrades_ControllerAdmin_AdvancedUpgrades extends XenForo_Controll
 		
 		$upgradeModel 	= $this->getModelFromCache('XenForo_Model_UserUpgrade');
 		$record 	 	= $upgradeModel->getActiveUserUpgradeRecordById($idRecord);
+		
+		if ( ! $record)
+		{
+			return $this->responseError(new XenForo_Phrase('requested_record_not_found'));
+		}
 		
 		$record['extra'] = unserialize($record['extra']);
 		
