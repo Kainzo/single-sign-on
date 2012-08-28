@@ -85,7 +85,7 @@ class XenSSO_Slave_Controller_Extend_Login extends XFCP_XenSSO_Slave_Controller_
 	{
 		
 		// get info about visitor
-		$visitor = XenFOro_Visitor::getInstance();
+		$visitor = XenForo_Visitor::getInstance();
 		$userId = $visitor->user_id;
 		
 		// Check if it's a success redirect and if the visitor is logged in
