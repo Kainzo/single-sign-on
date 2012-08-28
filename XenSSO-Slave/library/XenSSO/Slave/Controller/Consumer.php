@@ -18,7 +18,9 @@ class XenSSO_Slave_Controller_Consumer extends XenForo_ControllerPublic_Abstract
 		}
 		
 		// Gather OpenID request data
-		$consumer 	= new XenSSO_Slave_OpenID_Consumer();
+		$dir 		= XenForo_Application::getInstance()->getRootDir() . '/internal_data/xensso/';
+		$storage 	= new Zend_OpenId_Consumer_Storage_File($dir);
+		$consumer 	= new XenSSO_Slave_OpenID_Consumer($storage);
 		$sreg 		= $this->getSreg();
 		$returnTo 	= $this->getReturnTo();
 		
@@ -68,7 +70,9 @@ class XenSSO_Slave_Controller_Consumer extends XenForo_ControllerPublic_Abstract
 		}
 		
 		// Gather OpenID request data
-		$consumer 	= new XenSSO_Slave_OpenID_Consumer();
+		$dir 		= XenForo_Application::getInstance()->getRootDir() . '/internal_data/xensso/';
+		$storage 	= new Zend_OpenId_Consumer_Storage_File($dir);
+		$consumer 	= new XenSSO_Slave_OpenID_Consumer($storage);
 		$sreg 		= $this->getSreg();
 		
 		// Validate if returned data matches up with the request
