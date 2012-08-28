@@ -23,17 +23,17 @@ class XenSSO_Master_Validate
 		}
 		
 		// Parse domains
-		$domains = explode("\n", $value);
-		foreach ($domains AS $domain)
-		{
-			$domain = trim($domain);
-			
-			// Validate format of domain
-			if ( ! preg_match('/^[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}$/', $domain))
-			{
-				return false;
-			}
-		}
+		//$domains = explode("\n", $value);
+		//foreach ($domains AS $domain)
+		//{
+		//	$domain = trim($domain);
+		//	
+		//	// Validate format of domain
+		//	if ( ! preg_match('/^[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}$/', $domain))
+		//	{
+		//		return false;
+		//	}
+		//}
 		
 		return true;
 	}
