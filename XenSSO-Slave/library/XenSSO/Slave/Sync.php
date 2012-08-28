@@ -355,7 +355,7 @@ class XenSSO_Slave_Sync
 		curl_setopt($ch, 	CURLOPT_POST, true);
 		curl_setopt($ch, 	CURLOPT_POSTFIELDS, $postData);
 		curl_setopt($ch, 	CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt ($ch,	CURLOPT_CONNECTTIMEOUT, 2);
+		curl_setopt ($ch,	CURLOPT_CONNECTTIMEOUT, 30);
 		
 		// Charles Proxy
 		//curl_setopt ($ch,	CURLOPT_PROXY, '127.0.0.1');
