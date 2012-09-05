@@ -37,7 +37,6 @@ class XenSSO_Master_Controller_Provider extends XenForo_ControllerPublic_Abstrac
 		// Check for failed login / invalid input
 		if ( ! isset($params['openid_identity']) OR ! $server->login($params['openid_identity'], $params) )
 		{
-			
 			// Only resort to error after 1 login attempt
 			if (isset($params['tries']) AND $params['tries'] > 1)
 			{

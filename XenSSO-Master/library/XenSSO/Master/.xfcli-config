@@ -2,7 +2,7 @@
 	"addon":	{
 		"id":	"xensso_master",
 		"name":	"XenSSO - Master",
-		"namespace":	"Xensso_Master",
+		"namespace":	"XenSSO_Master",
 		"path":	"/library/XenSSO/Master/"
 	}
 }

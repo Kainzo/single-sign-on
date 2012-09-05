@@ -481,7 +481,7 @@ class XenSSO_Master_OpenID_Provider
             $ret['openid.mode'] = ($immediate && $version >= 2.0) ? 'setup_needed': 'cancel';
             return $ret;
         }
-
+		
         /* Check if user already logged in into the server */
         if (!isset($params['openid_identity']) ||
             $this->_user->getLoggedInUser() !== $params['openid_identity']) {

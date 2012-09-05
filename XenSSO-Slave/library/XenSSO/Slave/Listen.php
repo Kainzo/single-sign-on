@@ -18,6 +18,14 @@ class XenSSO_Slave_Listen
 			self::$_authKey = $session->get('xensso_auth_key');
 			$session->remove('xensso_auth_key');
 		}
+		
+		register_shutdown_function(array(__CLASS__, 'pre_shutdown'));
+	}
+	
+	public static function pre_shutdown()
+	{
+		$session = XenForo_Application::get('session');
+		$session->save();
 	}
 
 	public static function load_class_controller($class, array &$extend)

@@ -145,7 +145,8 @@ class XenSSO_Master_OpenID_Provider_XenForo extends XenSSO_Master_OpenID_Provide
 		
 		// Validate the authentication data
 		$userId = $userModel->validateAuthentication($data['login'], $data['password'], $error);
-		if (!$userId)
+		
+		if ( ! $userId)
 		{
 			$loginModel->logLoginAttempt($data['login']);
 			return false;
